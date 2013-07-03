@@ -1,12 +1,26 @@
 package com.adnan.videoapp;
 
-import android.os.Bundle;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import android.app.Activity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 public class StartActivity extends Activity {
 
-    @Override
+    private static final int CAPTURENATIVEVIDEO = 100;
+    private static final int IMPORT_VIDEO = 101;
+
+	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start);
@@ -16,5 +30,64 @@ public class StartActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_start, menu);
         return true;
+    }
+    
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+    	switch(item.getItemId()){
+    	case R.id.menu_camera:
+    		Toast.makeText(StartActivity.this, "Camera Selected.", Toast.LENGTH_SHORT).show();
+    		Intent nativeCameraIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+    		nativeCameraIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+    		Uri saveVideoAt = getVideoStoreUri();
+    		nativeCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, saveVideoAt);
+    		startActivityForResult(nativeCameraIntent, CAPTURENATIVEVIDEO);
+    		break;
+    	
+    	case R.id.menu_import:
+    		Intent pickVideoIntent = new Intent();
+    		pickVideoIntent.setType("video/*");
+    		pickVideoIntent.setAction(Intent.ACTION_GET_CONTENT);
+    		pickVideoIntent.addCategory(Intent.CATEGORY_OPENABLE);
+    		startActivityForResult(pickVideoIntent, IMPORT_VIDEO);
+    		break;
+    	
+    	}
+    	return true;
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if(requestCode == CAPTURENATIVEVIDEO){
+    		if(resultCode == RESULT_OK){
+    			Toast.makeText(getApplicationContext(), "Video saved at " + data.getData(), Toast.LENGTH_SHORT).show();
+    		}
+    		else if(resultCode == RESULT_CANCELED){
+    			Toast.makeText(getApplicationContext(), "Video cancelled.", Toast.LENGTH_SHORT).show();
+    		}else{
+    			Toast.makeText(getApplicationContext(), "Failed to capture.", Toast.LENGTH_SHORT).show();
+    		}
+    	}
+    }
+    
+    private Uri getVideoStoreUri(){
+    	return Uri.fromFile(getVideoStoreFile());
+    }
+    
+    private File getVideoStoreFile(){
+    	File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), getApplicationContext().getString(getApplicationContext()
+    			.getApplicationInfo().labelRes));
+    	Toast.makeText(getApplicationContext(), mediaStorageDir.getPath(), Toast.LENGTH_SHORT).show();
+    	if(! mediaStorageDir.exists()){
+    		if(! mediaStorageDir.mkdir()){
+    			Log.d("VideoApp", "Cannot create the file.");
+    		}
+    	}
+    	
+    	String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+    	File videoPath = new File(mediaStorageDir + File.separator + "VID_" + timeStamp + ".mp4");
+    	Log.i("VideoApp", "Saving video at " + videoPath);
+    	
+    	return videoPath;
     }
 }
