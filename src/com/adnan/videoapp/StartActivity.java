@@ -66,25 +66,24 @@ public class StartActivity extends Activity {
     	switch(requestCode){
     	case CAPTURENATIVEVIDEO:
     		if(resultCode == RESULT_OK){
-    			Toast.makeText(getApplicationContext(), "Video saved at " + data.getData(), Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this, "Video saved at " + data.getData(), Toast.LENGTH_SHORT).show();
     		}
     		else if(resultCode == RESULT_CANCELED){
-    			Toast.makeText(getApplicationContext(), "Video cancelled.", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this, "Video cancelled.", Toast.LENGTH_SHORT).show();
     		}else{
-    			Toast.makeText(getApplicationContext(), "Failed to capture.", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this, "Failed to capture.", Toast.LENGTH_SHORT).show();
     		}
     		break;
     		
     	case IMPORT_VIDEO:
     		if(resultCode == RESULT_OK){
-    			Toast.makeText(getApplicationContext(), "Data " + data.getData(), Toast.LENGTH_SHORT).show();
     			System.out.println("Data " + data.getData());
-    			Intent videoPlayerIntent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
+    			Intent videoPlayerIntent = new Intent(this, VideoPlayerActivity.class);
     			videoPlayerIntent.putExtra("VIDEO_URI", data.getData().toString());
     			startActivity(videoPlayerIntent);
     		}
     		else if(resultCode == RESULT_CANCELED){
-    			Toast.makeText(getApplicationContext(), "Import cancelled.", Toast.LENGTH_SHORT).show();
+    			Toast.makeText(this, "Import cancelled.", Toast.LENGTH_SHORT).show();
     		}
     		break;
     	}
@@ -95,9 +94,9 @@ public class StartActivity extends Activity {
     }
     
     private File getVideoStoreFile(){
-    	File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), getApplicationContext().getString(getApplicationContext()
+    	File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), this.getString(this
     			.getApplicationInfo().labelRes));
-    	Toast.makeText(getApplicationContext(), mediaStorageDir.getPath(), Toast.LENGTH_SHORT).show();
+    	Toast.makeText(this, mediaStorageDir.getPath(), Toast.LENGTH_SHORT).show();
     	if(! mediaStorageDir.exists()){
     		if(! mediaStorageDir.mkdir()){
     			Log.d("VideoApp", "Cannot create the file.");
