@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.adnan.videoapp.video.VideoPlayerActivity;
+
 public class StartActivity extends Activity {
 
     private static final int CAPTURENATIVEVIDEO = 100;
@@ -45,10 +47,13 @@ public class StartActivity extends Activity {
     		break;
     	
     	case R.id.menu_import:
-    		Intent pickVideoIntent = new Intent();
+    		Intent pickVideoIntent = new Intent(Intent.ACTION_PICK);
     		pickVideoIntent.setType("video/*");
-    		pickVideoIntent.setAction(Intent.ACTION_GET_CONTENT);
-    		pickVideoIntent.addCategory(Intent.CATEGORY_OPENABLE);
+    		
+//    		pickVideoIntent.setAction(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+    		/* Not the get content as  It says what kind of data desired not the Uri of selected data */
+    		
+    		//pickVideoIntent.addCategory(Intent.CATEGORY_OPENABLE);
     		startActivityForResult(pickVideoIntent, IMPORT_VIDEO);
     		break;
     	
@@ -58,7 +63,8 @@ public class StartActivity extends Activity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	if(requestCode == CAPTURENATIVEVIDEO){
+    	switch(requestCode){
+    	case CAPTURENATIVEVIDEO:
     		if(resultCode == RESULT_OK){
     			Toast.makeText(getApplicationContext(), "Video saved at " + data.getData(), Toast.LENGTH_SHORT).show();
     		}
@@ -67,6 +73,20 @@ public class StartActivity extends Activity {
     		}else{
     			Toast.makeText(getApplicationContext(), "Failed to capture.", Toast.LENGTH_SHORT).show();
     		}
+    		break;
+    		
+    	case IMPORT_VIDEO:
+    		if(resultCode == RESULT_OK){
+    			Toast.makeText(getApplicationContext(), "Data " + data.getData(), Toast.LENGTH_SHORT).show();
+    			System.out.println("Data " + data.getData());
+    			Intent videoPlayerIntent = new Intent(getApplicationContext(), VideoPlayerActivity.class);
+    			videoPlayerIntent.putExtra("VIDEO_URI", data.getData().toString());
+    			startActivity(videoPlayerIntent);
+    		}
+    		else if(resultCode == RESULT_CANCELED){
+    			Toast.makeText(getApplicationContext(), "Import cancelled.", Toast.LENGTH_SHORT).show();
+    		}
+    		break;
     	}
     }
     
