@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".video.VideoPlayerActivity" />
+        <activity android:name=".paint.FingerPaint"/>
     </application>
 
 </manifest>

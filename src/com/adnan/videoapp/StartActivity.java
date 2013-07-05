@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.adnan.videoapp.paint.FingerPaint;
 import com.adnan.videoapp.video.VideoPlayerActivity;
 
 public class StartActivity extends Activity {
@@ -78,7 +79,7 @@ public class StartActivity extends Activity {
     	case IMPORT_VIDEO:
     		if(resultCode == RESULT_OK){
     			System.out.println("Data " + data.getData());
-    			Intent videoPlayerIntent = new Intent(this, VideoPlayerActivity.class);
+    			Intent videoPlayerIntent = new Intent(this, FingerPaint.class);
     			videoPlayerIntent.putExtra("VIDEO_URI", data.getData().toString());
     			startActivity(videoPlayerIntent);
     		}
