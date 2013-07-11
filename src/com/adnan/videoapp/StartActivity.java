@@ -4,6 +4,8 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import com.adnan.videoapp.video.VideoPlayerActivity;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -14,9 +16,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
-
-import com.adnan.videoapp.paint.FingerPaint;
-import com.adnan.videoapp.video.VideoPlayerActivity;
 
 public class StartActivity extends Activity {
 
@@ -48,12 +47,11 @@ public class StartActivity extends Activity {
     		break;
     	
     	case R.id.menu_import:
-    		Intent pickVideoIntent = new Intent(Intent.ACTION_PICK);
+    		/* Not the get content as  It says what kind of data desired not the Uri of selected data */
+    		Intent pickVideoIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
     		pickVideoIntent.setType("video/*");
     		
-//    		pickVideoIntent.setAction(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-    		/* Not the get content as  It says what kind of data desired not the Uri of selected data */
-    		
+//    		pickVideoIntent.setAction(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);    		
     		//pickVideoIntent.addCategory(Intent.CATEGORY_OPENABLE);
     		startActivityForResult(pickVideoIntent, IMPORT_VIDEO);
     		break;
@@ -79,7 +77,7 @@ public class StartActivity extends Activity {
     	case IMPORT_VIDEO:
     		if(resultCode == RESULT_OK){
     			System.out.println("Data " + data.getData());
-    			Intent videoPlayerIntent = new Intent(this, FingerPaint.class);
+    			Intent videoPlayerIntent = new Intent(this, VideoPlayerActivity.class);
     			videoPlayerIntent.putExtra("VIDEO_URI", data.getData().toString());
     			startActivity(videoPlayerIntent);
     		}
